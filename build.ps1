@@ -35,7 +35,7 @@ Write-Host 'Publishing zonetune-cli.exe...' -ForegroundColor Cyan
 dotnet publish src\ZoneTune.Cli\ZoneTune.Cli.csproj @common -o dist
 if ($LASTEXITCODE -ne 0) { throw 'CLI publish failed.' }
 
-Copy-Item README.md, INSTALL.md, ERROR_LOGGING.md, THIRD_PARTY_NOTICES.md, LICENSE, CHANGELOG.md dist -Force
+Copy-Item README.md, INSTALL.md, ERROR_LOGGING.md, THIRD_PARTY_NOTICES.md, LICENSE, CHANGELOG.md, MAINTENANCE.md dist -Force
 if (Test-Path docs) { Copy-Item docs dist -Recurse -Force }
 
 # Remove development-only artefacts that publish may copy.

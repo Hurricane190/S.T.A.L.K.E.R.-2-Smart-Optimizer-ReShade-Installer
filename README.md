@@ -133,6 +133,8 @@ ZoneTune reports average FPS, 1% / 0.1% lows, median/p95/p99 frame times, a stut
 
 See [INSTALL.md](INSTALL.md) for users and [BUILD.md](BUILD.md) for developers.
 
+Maintenance, update, release and recovery procedures: [MAINTENANCE.md](MAINTENANCE.md).
+
 ```powershell
 # Release build
 .\build.ps1
