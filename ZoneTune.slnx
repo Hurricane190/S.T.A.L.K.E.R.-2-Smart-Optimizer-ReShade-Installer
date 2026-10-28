@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ZoneTune.Cli/ZoneTune.Cli.csproj" />
+    <Project Path="src/ZoneTune.Core/ZoneTune.Core.csproj" />
+    <Project Path="src/ZoneTune/ZoneTune.csproj" />
+  </Folder>
+</Solution>

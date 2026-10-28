@@ -1,0 +1,151 @@
+<Window x:Class="ZoneTune.UI.PresetPreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Preset preview" Width="1080" Height="780" WindowStartupLocation="CenterOwner"
+        WindowStyle="None" ResizeMode="CanResize" Background="{StaticResource Bg}" ShowInTaskbar="False">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="44" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style x:Key="PreviewLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="9.5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource Dim}"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#0A0E0B" BorderBrush="#1B251E" BorderThickness="0,0,0,1"
+                MouseLeftButtonDown="Header_MouseLeftButtonDown">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <TextBlock Text="&#xE790;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="{StaticResource Amber}" VerticalAlignment="Center"/>
+                    <TextBlock Text="Preset preview &amp; comparison" FontSize="12" FontWeight="SemiBold" Margin="9,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button Content="&#x2715;" FontFamily="Segoe UI" FontSize="13" HorizontalAlignment="Right" Width="44" Height="30" Margin="0,0,8,0"
+                        Style="{StaticResource WindowButton}" Click="Close_Click" shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="22,18,22,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="350"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,18,0">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                            <TextBlock Text="ORIGINAL (SYNTHETIC SCENE)" Style="{StaticResource PreviewLabel}"/>
+                            <Border BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="7" Margin="0,6,0,0" ClipToBounds="True">
+                                <Image x:Name="OriginalImage" Stretch="UniformToFill" Height="190"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="SELECTED PRESET" Style="{StaticResource PreviewLabel}"/>
+                                <Border x:Name="SelectedStatus" Style="{StaticResource Chip}" Margin="8,0,0,0" Padding="7,1">
+                                    <TextBlock x:Name="SelectedStatusText" Text="ESTIMATED" FontSize="8.5" FontWeight="Bold" Foreground="{StaticResource Amber}"/>
+                                </Border>
+                            </StackPanel>
+                            <Border BorderBrush="{StaticResource AmberDim}" BorderThickness="1" CornerRadius="7" Margin="0,6,0,0" ClipToBounds="True">
+                                <Image x:Name="SelectedImage" Stretch="UniformToFill" Height="190"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Background="#0F1511" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,10,0,0">
+                        <TextBlock Text="Illustrative colour preview rendered by ZoneTune from a synthetic scene. It is not a game screenshot and cannot prove in-game compatibility or frame cost."
+                                   FontSize="10" Foreground="{StaticResource Dim}" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="COMPARE WITH" Style="{StaticResource PreviewLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox Grid.Column="1" x:Name="CompareCombo" SelectionChanged="Compare_Changed" Height="30">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" FontSize="12"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+                    <Border BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="7" Margin="0,8,0,0" ClipToBounds="True" Background="#0B110D">
+                        <Grid>
+                            <Image x:Name="CompareImage" Stretch="UniformToFill" Height="220"/>
+                            <Border Background="#B0000000" CornerRadius="4" Padding="8,3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8">
+                                <TextBlock x:Name="CompareLabel" Text="" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Border Background="#0F1511" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,14,0,0">
+                        <StackPanel>
+                            <TextBlock Text="STRUCTURAL CHECK ON THIS INSTALL" Style="{StaticResource PreviewLabel}"/>
+                            <StackPanel x:Name="ValidationPanel" Margin="0,7,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Column="1" Style="{StaticResource Card}" Padding="18">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,-4,0">
+                        <StackPanel Margin="0,0,8,0">
+                            <TextBlock x:Name="NameText" Style="{StaticResource H2}" FontSize="21"/>
+                            <TextBlock x:Name="AuthorText" Style="{StaticResource BodyDim}" Margin="0,3,0,0"/>
+                            <WrapPanel x:Name="BadgePanel" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="DescriptionText" Style="{StaticResource BodyDim}" Margin="0,14,0,0" Foreground="#C7D3C6"/>
+
+                            <TextBlock Text="PERFORMANCE IMPACT" Style="{StaticResource PreviewLabel}" Margin="0,18,0,0"/>
+                            <TextBlock x:Name="CostText" FontSize="12.5" Foreground="{StaticResource Text}" Margin="0,4,0,0"/>
+                            <TextBlock Text="Author/estimate only. Not measured by ZoneTune." FontSize="10" Foreground="{StaticResource Dim}" Margin="0,2,0,0"/>
+
+                            <TextBlock Text="STYLE" Style="{StaticResource PreviewLabel}" Margin="0,16,0,0"/>
+                            <WrapPanel x:Name="TagsPanel" Margin="0,5,0,0"/>
+
+                            <TextBlock Text="TECHNIQUES" Style="{StaticResource PreviewLabel}" Margin="0,16,0,0"/>
+                            <StackPanel x:Name="TechniquesPanel" Margin="0,4,0,0"/>
+
+                            <TextBlock Text="REQUIREMENTS" Style="{StaticResource PreviewLabel}" Margin="0,16,0,0"/>
+                            <StackPanel x:Name="RequirementsPanel" Margin="0,4,0,0"/>
+
+                            <TextBlock Text="SOURCE &amp; LICENSE" Style="{StaticResource PreviewLabel}" Margin="0,16,0,0"/>
+                            <TextBlock x:Name="SourceText" Style="{StaticResource BodyDim}" Margin="0,4,0,0"/>
+                            <TextBlock x:Name="LicenseText" Style="{StaticResource BodyDim}" Margin="0,2,0,0" Foreground="#7E8F80"/>
+
+                            <StackPanel x:Name="WarningsPanel" Margin="0,14,0,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                        <Border Height="1" Background="{StaticResource Line}" Margin="0,0,0,12"/>
+                        <Button x:Name="InstallButton" Style="{StaticResource PrimaryButton}" Click="Install_Click" Padding="14,10"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
+                        <Button x:Name="SourceButton" Style="{StaticResource ButtonBase}" Click="Source_Click" Padding="14,8"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,8"/>
+                        <TextBlock Text="Installing backs up ReShade.ini, the existing preset and any proxy DLL, then records every file it adds. 'Verified' never means visually tested."
+                                   FontSize="9.5" Foreground="#5E6E61" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

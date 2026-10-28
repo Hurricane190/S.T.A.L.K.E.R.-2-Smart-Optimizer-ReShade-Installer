@@ -1,0 +1,123 @@
+<UserControl x:Class="ZoneTune.UI.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="30,0,30,34">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="DETECTION &amp; BEHAVIOR" Style="{StaticResource Overline}"/>
+                    <TextBlock Text="Settings are stored locally in %LOCALAPPDATA%\\ZoneTune. No telemetry, no cloud sync." Style="{StaticResource BodyDim}" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Style="{StaticResource ButtonBase}" Content="Restore latest change" Click="RestoreLatest_Click" Padding="13,9" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="Save settings" Click="Save_Click" Padding="16,9"/>
+                </StackPanel>
+            </Grid>
+
+            <Border Style="{StaticResource Card}" Padding="18" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="GAME FOLDER" Style="{StaticResource Overline}"/>
+                    <TextBlock Text="Detected automatically from Steam library manifests. Override it if the game lives elsewhere (Xbox/MSIX or a moved library)." Style="{StaticResource BodyDim}" Margin="0,4,0,0"/>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="GamePathBox" Height="34" VerticalContentAlignment="Center"/>
+                        <Button Grid.Column="1" Style="{StaticResource ButtonBase}" Content="Browse" Click="BrowseGame_Click" Margin="8,0,0,0" Padding="13,7"/>
+                        <Button Grid.Column="2" Style="{StaticResource ButtonBase}" Content="Auto-detect" Click="Detect_Click" Margin="8,0,0,0" Padding="13,7"/>
+                    </Grid>
+                    <TextBlock x:Name="GameStatusText" Text="" FontSize="10.5" Foreground="{StaticResource Dim}" Margin="0,7,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="18" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="SAFETY &amp; NETWORK" Style="{StaticResource Overline}"/>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                            <CheckBox x:Name="NetworkCheck" Content="Allow network downloads (ReShade, official shaders, public preset search)" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="VerifyCheck" Content="Verify ReShade hash + Authenticode signature before execution" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="GameClosedCheck" Content="Require the game to be closed before applying changes" Margin="0,0,0,10"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <CheckBox x:Name="DryRunCheck" Content="Dry run by default (never write files)" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="ZipCheck" Content="Suggest a ZIP package after generating a plan" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="ReportCheck" Content="Open the report after export" Margin="0,0,0,10"/>
+                        </StackPanel>
+                    </Grid>
+                    <Border Height="1" Background="{StaticResource LineSoft}" Margin="0,6,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="BACKUP ROOT" Style="{StaticResource Overline}"/>
+                            <TextBox x:Name="BackupBox" Height="34" Margin="0,6,0,0" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Style="{StaticResource ButtonBase}" Content="Browse" Click="BrowseBackup_Click" Margin="8,22,0,0" Padding="13,7"/>
+                        <StackPanel Grid.Column="2" Margin="18,0,0,0" VerticalAlignment="Bottom">
+                            <TextBlock Text="KEEP" Style="{StaticResource Overline}"/>
+                            <TextBox x:Name="KeepBox" Width="64" Height="34" Margin="0,6,0,0" Text="10" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Every apply/install creates a timestamped change set with original bytes and SHA-256 hashes. Restores also snapshot the current state first."
+                               Style="{StaticResource BodyDim}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Grid Margin="0,22,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="BACKUPS &amp; CHANGE SETS" Style="{StaticResource Overline}"/>
+                    <TextBlock Text="Restore is byte-exact. Files created by ZoneTune are removed on restore; originals are copied back." Style="{StaticResource BodyDim}" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Style="{StaticResource ButtonBase}" Content="Prune old" Click="Prune_Click" Padding="11,6" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource ButtonBase}" Content="Open folder" Click="OpenBackups_Click" Padding="11,6"/>
+                </StackPanel>
+            </Grid>
+            <StackPanel x:Name="BackupPanel" Margin="0,12,0,0"/>
+
+            <Border Style="{StaticResource Card}" Padding="18" Margin="0,16,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="LOGS &amp; DIAGNOSTICS" Style="{StaticResource Overline}"/>
+                        <TextBlock x:Name="LogPathText" Text="" Style="{StaticResource Mono}" Margin="0,5,0,0"/>
+                        <TextBlock Text="Unhandled exceptions are written to crash-*.log. Share the log folder when reporting an issue; review paths first." Style="{StaticResource BodyDim}" Margin="0,6,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Button Style="{StaticResource ButtonBase}" Content="Open log folder" Click="OpenLogs_Click" Padding="12,7" Margin="0,0,0,8"/>
+                        <Button Style="{StaticResource ButtonBase}" Content="Open app data" Click="OpenData_Click" Padding="12,7"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Background="#0F1511" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="9" Padding="16" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Text="ABOUT ZONETUNE" Style="{StaticResource Overline}"/>
+                    <TextBlock Text="ZoneTune 1.0.0 · local-only Windows utility for STALKER 2: Heart of Chornobyl. It reads hardware, configuration, installed mods and logs; writes only after creating a change set; never deletes mods." Style="{StaticResource BodyDim}" Margin="0,5,0,0"/>
+                    <TextBlock Text="Not affiliated with GSC Game World or the ReShade project. STALKER is a trademark of its owner. ReShade is downloaded from reshade.me; shader files are fetched from the official crosire/reshade-shaders repository and retain their licenses. Presets authored by ZoneTune are CC0-1.0." Style="{StaticResource BodyDim}" Margin="0,7,0,0"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

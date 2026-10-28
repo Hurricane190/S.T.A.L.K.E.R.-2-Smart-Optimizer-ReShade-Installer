@@ -1,0 +1,55 @@
+<UserControl x:Class="ZoneTune.UI.Views.OptimizeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="30,0,30,34">
+            <Border Style="{StaticResource Card}" Padding="20" Background="#101711" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" MaxWidth="720" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource Chip}" Background="#1B2518" BorderBrush="#33452F" Margin="0,0,8,8">
+                                <TextBlock Text="HARDWARE PROFILE" FontSize="9" FontWeight="Bold" Foreground="{StaticResource Green}"/>
+                            </Border>
+                            <TextBlock x:Name="ProfileHardware" Text="" FontSize="10.5" Foreground="{StaticResource Dim}" VerticalAlignment="Center" Margin="0,0,0,8"/>
+                        </StackPanel>
+                        <TextBlock Text="Recommended in-game settings" Style="{StaticResource H2}"/>
+                        <TextBlock x:Name="ProfileBody" Text="Scan the system to derive a balanced settings profile. Applying writes GameUserSettings.ini after a backup."
+                                   Style="{StaticResource BodyDim}" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="PreviewProfileButton" Style="{StaticResource ButtonBase}" Content="Preview changes" Click="PreviewProfile_Click" Margin="0,0,8,0" Padding="12,8"/>
+                        <Button x:Name="ApplyProfileButton" Style="{StaticResource PrimaryButton}" Content="Apply recommended" Click="ApplyProfile_Click" Padding="16,9"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="20">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="1 · CHOOSE THE PROBLEM" Style="{StaticResource Overline}"/>
+                            <TextBlock Text="Each selection changes which rules run. The plan stays editable." Style="{StaticResource BodyDim}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <CheckBox x:Name="DryRunCheck" Content="Dry run" Foreground="{StaticResource Dim}" Margin="0,0,14,0"
+                                      ToolTip="Generate and validate a plan without writing any file."/>
+                            <Button x:Name="GenerateButton" Style="{StaticResource PrimaryButton}" Content="Generate plan"
+                                    Padding="18,9" Click="Generate_Click"/>
+                        </StackPanel>
+                    </Grid>
+                    <UniformGrid x:Name="ProblemGrid" Columns="3" Margin="0,16,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <ContentControl x:Name="PlanHost" Margin="0,18,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
