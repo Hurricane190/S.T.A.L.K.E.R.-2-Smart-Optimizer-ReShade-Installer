@@ -6,3 +6,5 @@ dist/
 .vs/
 TestResults/
 *.zip
+
+*.rar
