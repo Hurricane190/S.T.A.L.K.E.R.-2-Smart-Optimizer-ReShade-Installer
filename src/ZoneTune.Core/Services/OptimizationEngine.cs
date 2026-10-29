@@ -519,7 +519,7 @@ public sealed class OptimizationEngine
         {
             actions.Add(Recommendation("stutter-reshade", "Trim heavy ReShade effects while diagnosing stutter",
                 $"ReShade is running '{scan.ReShade.PresetName}' with {scan.ReShade.PresetTechniques.Count} techniques. Toggle the preset off " +
-                "with the Home overlay and compare frame-time spikes. If the spikes disappear, switch to a lighter preset in the ReShade Manager.",
+                "with the Home overlay and compare frame-time spikes. If the spikes disappear, switch to a lighter preset in the Preset Studio.",
                 string.Join(", ", scan.ReShade.PresetTechniques.Take(6)),
                 ProblemKind.Stuttering, "Expected: removes post-processing cost; helps only if ReShade is the cause."));
         }
@@ -549,7 +549,7 @@ public sealed class OptimizationEngine
         {
             actions.Add(Recommendation("shared-hdr-reshade", "Disable HDR while using ReShade",
                 "HDR is enabled and ReShade is active. Most ReShade effects and presets are authored for SDR; HDR10 output can look washed out " +
-                "or clipped. Disable HDR in-game (or remove ReShade) and compare. The ReShade Manager flags this on every preset.",
+                "or clipped. Disable HDR in-game (or remove ReShade) and compare. The Preset Studio flags this on every preset.",
                 $"HDR enabled={scan.Hardware.HdrEnabled}; ReShade {scan.ReShade.Version} via {scan.ReShade.ProxyDll}.",
                 ProblemKind.LowFps, "Expected: correct colour rather than a performance change."));
         }

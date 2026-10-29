@@ -8,8 +8,8 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>ZoneTune</RootNamespace>
     <AssemblyName>ZoneTune</AssemblyName>
-    <Version>1.0.0</Version>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.1.1</Version>
+    <FileVersion>1.1.1.0</FileVersion>
     <Product>ZoneTune — STALKER 2 Smart Optimizer</Product>
     <Company>ZoneTune</Company>
     <Description>Hardware-aware, reversible optimization and ReShade manager for STALKER 2.</Description>

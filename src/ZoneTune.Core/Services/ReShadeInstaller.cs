@@ -35,7 +35,7 @@ public sealed class ReShadeInstaller
         if (preset.InstallMode == InstallMode.ExternalOnly)
         {
             result.Errors.Add("This preset is distributed on the author's page. Open the source page, download it manually, then use " +
-                              "'Import preset file' in the ReShade Manager. ZoneTune does not bypass author distribution.");
+                              "'Import preset file' in the Preset Studio. ZoneTune does not bypass author distribution.");
             return result;
         }
 
@@ -186,7 +186,7 @@ public sealed class ReShadeInstaller
                 result.Verification = $"Installed with warnings: {validation.Missing.Count} referenced shader file(s) are missing. " +
                                       "The preset may load partially. Install the author's shader package or choose another preset.";
             }
-            result.Messages.Add("Backup/change set: " + cs.Id + ". Use 'Uninstall & restore' in the ReShade Manager to roll back.");
+            result.Messages.Add("Backup/change set: " + cs.Id + ". Use 'Uninstall & restore' in the Preset Studio to roll back.");
             result.Messages.Add("Compatibility status is structural only. Frame cost has not been measured on this machine.");
             backups.Save(cs);
             return result;

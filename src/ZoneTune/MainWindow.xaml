@@ -138,9 +138,9 @@
                     <StackPanel Grid.Row="1">
                         <RadioButton x:Name="NavDashboard" Style="{StaticResource NavItem}" Tag="&#xE80F;" Content="Dashboard" IsChecked="True" Checked="Nav_Checked"/>
                         <RadioButton x:Name="NavOptimize" Style="{StaticResource NavItem}" Tag="&#xE9D9;" Content="Optimize" Checked="Nav_Checked"/>
-                        <RadioButton x:Name="NavReShade" Style="{StaticResource NavItem}" Tag="&#xE91B;" Content="ReShade Manager" Checked="Nav_Checked"/>
                         <RadioButton x:Name="NavStudio" Style="{StaticResource NavItem}" Tag="&#xE790;" Content="Preset Studio" Checked="Nav_Checked"/>
                         <RadioButton x:Name="NavMods" Style="{StaticResource NavItem}" Tag="&#xE71D;" Content="Installed Mods" Checked="Nav_Checked"/>
+                        <RadioButton x:Name="NavModAnalyzer" Style="{StaticResource NavItem}" Tag="&#xE9D2;" Content="Mod Analyzer" Checked="Nav_Checked"/>
                         <RadioButton x:Name="NavSettings" Style="{StaticResource NavItem}" Tag="&#xE713;" Content="Settings &amp; Backups" Checked="Nav_Checked"/>
                         <RadioButton x:Name="NavReports" Style="{StaticResource NavItem}" Tag="&#xE9F9;" Content="Diagnostic Reports" Checked="Nav_Checked"/>
 
@@ -171,7 +171,7 @@
                                 <TextBlock x:Name="SidebarScan" Text="Not scanned" FontSize="10" Foreground="#5F6F62" Margin="0,5,0,0"/>
                             </StackPanel>
                         </Border>
-                        <TextBlock Text="v1.0.0 · local-only · no telemetry" FontSize="9.5" Foreground="#4F5D51" Margin="2,10,0,0"/>
+                        <TextBlock Text="v1.1.1 · local-only · no telemetry" FontSize="9.5" Foreground="#4F5D51" Margin="2,10,0,0"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -235,7 +235,7 @@
                             <TextBlock Text="Backups" FontSize="10" Foreground="#5D6C60" VerticalAlignment="Center" Cursor="Hand"
                                        MouseLeftButtonUp="OpenBackups_Click"/>
                             <TextBlock Text="·" FontSize="10" Foreground="#334034" Margin="8,0"/>
-                            <TextBlock x:Name="FooterVersion" Text="v1.0.0" FontSize="10" Foreground="#334034" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="FooterVersion" Text="v1.1.1" FontSize="10" Foreground="#334034" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </Border>

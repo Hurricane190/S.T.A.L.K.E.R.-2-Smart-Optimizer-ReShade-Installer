@@ -6,7 +6,7 @@ public static class AppPaths
 {
     public const string ProductName = "ZoneTune";
     public const string ProductFullName = "ZoneTune — STALKER 2 Smart Optimizer";
-    public const string Version = "1.0.0";
+    public const string Version = "1.1.1";
 
     public static string DataRoot { get; } = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ZoneTune");

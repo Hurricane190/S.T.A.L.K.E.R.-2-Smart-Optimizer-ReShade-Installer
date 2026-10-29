@@ -39,9 +39,9 @@ public partial class MainWindow : Window
     {
         ["dashboard"] = ("Dashboard", "A clear picture of the Zone on your hardware."),
         ["optimize"] = ("Optimize", "Select the problems, review every change, then apply or export a reversible package."),
-        ["reshade"] = ("ReShade Manager", "Hardware-aware preset discovery, structural validation, and backed-up installation."),
-        ["studio"] = ("Preset Studio", "Build your own Potato, Medium or High ReShade look. Preview it, save it, install it, undo it."),
+        ["studio"] = ("Preset Studio", "Install or remove ReShade, pick a catalog preset, or build and install your own look."),
         ["mods"] = ("Installed Mods", "Read-only inventory first. Disable is a reversible move, never a delete."),
+        ["modanalyzer"] = ("Mod Performance Analyzer", "Static, evidence-based mod inspection, reversible quarantine, and manual before/after comparison."),
         ["settings"] = ("Settings & Backups", "Detection, network policy, backup retention, and one-click restore."),
         ["reports"] = ("Diagnostic Reports", "Evidence from this PC. Measurement is required before claiming an improvement.")
     };
@@ -71,6 +71,23 @@ public partial class MainWindow : Window
             Navigate("dashboard");
             await Task.Delay(120);
             await RunScanAsync(silent: true);
+            if (Environment.GetCommandLineArgs().Contains("--ui-smoke", StringComparer.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    foreach (var key in _headers.Keys.ToList())
+                    {
+                        Navigate(key);
+                        await Task.Delay(80);
+                    }
+                    Log.Info("UI smoke test: all tabs instantiated and refreshed (" + string.Join(", ", _headers.Keys) + ").");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("UI smoke test failed", ex);
+                }
+                Close();
+            }
         };
         Closing += (_, _) =>
         {
@@ -141,9 +158,9 @@ public partial class MainWindow : Window
         if (sender is not RadioButton rb) return;
         var key = rb == NavDashboard ? "dashboard"
             : rb == NavOptimize ? "optimize"
-            : rb == NavReShade ? "reshade"
             : rb == NavStudio ? "studio"
             : rb == NavMods ? "mods"
+            : rb == NavModAnalyzer ? "modanalyzer"
             : rb == NavSettings ? "settings"
             : "reports";
         Navigate(key);
@@ -156,9 +173,9 @@ public partial class MainWindow : Window
         PageTitle.Text = header.title;
         PageSubtitle.Text = header.subtitle;
 
-        (NavDashboard.IsChecked, NavOptimize.IsChecked, NavReShade.IsChecked, NavStudio.IsChecked, NavMods.IsChecked,
-            NavSettings.IsChecked, NavReports.IsChecked) = (key == "dashboard", key == "optimize", key == "reshade",
-            key == "studio", key == "mods", key == "settings", key == "reports");
+        (NavDashboard.IsChecked, NavOptimize.IsChecked, NavStudio.IsChecked, NavMods.IsChecked, NavModAnalyzer.IsChecked,
+            NavSettings.IsChecked, NavReports.IsChecked) = (key == "dashboard", key == "optimize", key == "studio",
+            key == "mods", key == "modanalyzer", key == "settings", key == "reports");
 
         if (!_views.TryGetValue(key, out var view))
         {
@@ -166,9 +183,9 @@ public partial class MainWindow : Window
             {
                 "dashboard" => new DashboardView(this),
                 "optimize" => new OptimizeView(this),
-                "reshade" => new ReShadeView(this),
                 "studio" => new PresetStudioView(this),
                 "mods" => new ModsView(this),
+                "modanalyzer" => new ModAnalyzerView(this),
                 "settings" => new SettingsView(this),
                 _ => new ReportsView(this)
             };

@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.1.1 — 2026-10-29
+
+- Mod Analyzer: added a persisted **Ignore / Unignore** action for MEDIUM and HIGH risk mods.
+- Ignored warnings are excluded from the summary counts and flagged filters, while the full evidence remains available in **Details**.
+- Ignore decisions are stored in `%LOCALAPPDATA%\ZoneTune\mod-ignores.json` and survive rescans/app restarts.
+- 64/64 self-tests.
+
+## 1.1.0 — 2026-10-29
+
+- New **Mod Performance Analyzer** tab: static inspection of legacy pak and IoStore `.utoc` indexes, Lua patterns, asset categories, native files, config values and cross-mod asset overlaps.
+- Per-mod LOW / MEDIUM / HIGH / UNKNOWN assessment with confirmed facts separated from performance hypotheses and explicit limitations. No FPS loss is claimed from file inspection.
+- Verified quarantine/restore service: copy → SHA-256 verify → remove original, JSON manifest, collision refusal, tamper/missing detection, interrupted-operation recovery.
+- Vortex-managed entries, config overrides and merger output are blocked from quarantine with explanations. UE4SS folders are moved whole without editing `mods.json`/`mods.txt`.
+- Manual PresentMon before/after comparison with stored records and per-set attribution warnings.
+- ReShade install/repair/remove and the full preset catalog moved into **Preset Studio**; the separate **ReShade Manager** tab was removed.
+- UE4SS enabled state now respects `mods.json`, load-order JSON, `enabled.txt`/`disabled.txt` and `.disabled` markers.
+- Mod scanner no longer lists paks nested inside a mod folder as duplicate top-level components.
+- 63/63 self-tests including fixture-based analyzer, quarantine and comparison coverage.
+
 ## 1.0.0 — 2026-10-28
 
 Initial functional release.

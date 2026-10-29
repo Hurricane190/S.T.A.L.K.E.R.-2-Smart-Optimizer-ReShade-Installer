@@ -56,7 +56,7 @@ public sealed class ModService
             if (mod.Kind == ModKind.ConfigOverride)
                 return (false, "Config overrides are managed as files, not mods. Edit or restore them from Settings & Backups.", false);
 
-            var vortex = VortexManaged(game);
+            var vortex = VortexManaged(game, mod);
             var state = LoadState();
             var records = new List<MoveRecord>();
 
@@ -140,7 +140,7 @@ public sealed class ModService
         {
             if (new ConfigService().IsGameRunning()) return (false, "Exit STALKER 2 before changing mods; the game holds file handles.", false);
             if (mod.Enabled) return (true, "Already enabled.", false);
-            var vortex = VortexManaged(game);
+            var vortex = VortexManaged(game, mod);
             var state = LoadState();
             var matched = state.Where(r =>
                 string.Equals(r.CurrentPath, mod.Path, StringComparison.OrdinalIgnoreCase) ||
@@ -215,10 +215,17 @@ public sealed class ModService
         }
     }
 
-    private static bool VortexManaged(GameInstall game)
+    private static bool VortexManaged(GameInstall game, ModEntry? mod = null)
     {
         try
         {
+            if (mod != null)
+            {
+                var dir = Directory.Exists(mod.Path) ? mod.Path : Path.GetDirectoryName(mod.Path) ?? "";
+                if (dir.Length > 0 && File.Exists(Path.Combine(dir, "__folder_managed_by_vortex"))) return true;
+                if (dir.Length > 0 && Directory.Exists(dir) &&
+                    Directory.EnumerateFiles(dir, "*.vortex_backup", SearchOption.TopDirectoryOnly).Any()) return true;
+            }
             return Directory.Exists(game.BinariesDir) &&
                    Directory.EnumerateFiles(game.BinariesDir, "vortex.deployment.*", SearchOption.TopDirectoryOnly).Any();
         }

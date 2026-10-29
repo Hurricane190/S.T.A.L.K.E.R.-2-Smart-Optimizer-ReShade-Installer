@@ -52,7 +52,9 @@ public sealed class ModScanner
             mods.Add(entry);
         }
 
-        foreach (var file in SafeFiles(game.ModsDir, 1))
+        // Only top-level loose paks are separate components. Recursing here would list
+        // every pak inside a mod folder a second time (and inflate the inventory).
+        foreach (var file in SafeFiles(game.ModsDir, 0))
         {
             var ext = Path.GetExtension(file);
             if (!ext.Equals(".pak", StringComparison.OrdinalIgnoreCase)) continue;
@@ -132,7 +134,9 @@ public sealed class ModScanner
     {
         var root = Path.Combine(game.BinariesDir, "ue4ss", "Mods");
         if (!Directory.Exists(root)) return;
-        var states = ReadUe4ssModList(Path.Combine(game.BinariesDir, "ue4ss", "mods.txt"));
+        var txtStates = ReadUe4ssModList(Path.Combine(game.BinariesDir, "ue4ss", "mods.txt"));
+        var jsonStates = ReadUe4ssJson(Path.Combine(root, "mods.json"));
+        var loadOrderStates = ReadUe4ssLoadOrder(root);
 
         foreach (var dir in SafeDirectories(root))
         {
@@ -140,7 +144,21 @@ public sealed class ModScanner
             var files = SafeFiles(dir, 5);
             var hasEnabled = File.Exists(Path.Combine(dir, "enabled.txt"));
             var hasDisabled = File.Exists(Path.Combine(dir, "disabled.txt"));
-            var enabled = hasEnabled || (!hasDisabled && (!states.TryGetValue(name, out var state) || state));
+            var hasDisabledMarker = File.Exists(Path.Combine(dir, "enabled.txt.disabled"));
+            var allDisabled = files.Length > 0 &&
+                               files.Where(f => f.EndsWith(".disabled", StringComparison.OrdinalIgnoreCase) ||
+                                                f.EndsWith(".e2f_disabled", StringComparison.OrdinalIgnoreCase))
+                                   .Count() == files.Length;
+            var enabled = hasEnabled || (!hasDisabled && !hasDisabledMarker && !allDisabled &&
+                (jsonStates.TryGetValue(name, out var jsonState) ? jsonState :
+                 loadOrderStates.TryGetValue(name, out var loadState) ? loadState :
+                 !txtStates.TryGetValue(name, out var txtState) || txtState));
+            var source = hasEnabled ? "enabled.txt" :
+                hasDisabled ? "disabled.txt" :
+                hasDisabledMarker || allDisabled ? "disabled file markers" :
+                jsonStates.ContainsKey(name) ? "mods.json" :
+                loadOrderStates.ContainsKey(name) ? "UE4SS load order" :
+                txtStates.ContainsKey(name) ? "mods.txt" : "default (no state marker)";
             mods.Add(new ModEntry
             {
                 Name = name,
@@ -149,9 +167,58 @@ public sealed class ModScanner
                 SizeBytes = files.Sum(f => SafeLength(f)),
                 Enabled = enabled,
                 IsDirectory = true,
-                Notes = enabled ? "UE4SS Lua mod" : "Disabled (disabled.txt or mods.txt)"
+                Notes = (enabled ? "UE4SS Lua mod" : "Disabled") + $" · state from {source}"
             });
         }
+    }
+
+    private static Dictionary<string, bool> ReadUe4ssJson(string path)
+    {
+        var result = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        if (!File.Exists(path)) return result;
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
+            if (doc.RootElement.ValueKind != System.Text.Json.JsonValueKind.Array) return result;
+            foreach (var item in doc.RootElement.EnumerateArray())
+            {
+                if (item.ValueKind != System.Text.Json.JsonValueKind.Object) continue;
+                var name = item.TryGetProperty("mod_name", out var n) ? n.GetString() :
+                           item.TryGetProperty("name", out var n2) ? n2.GetString() : null;
+                var enabled = item.TryGetProperty("mod_enabled", out var e) && e.ValueKind is System.Text.Json.JsonValueKind.True or System.Text.Json.JsonValueKind.False
+                    ? e.GetBoolean()
+                    : item.TryGetProperty("enabled", out var e2) && e2.ValueKind is System.Text.Json.JsonValueKind.True or System.Text.Json.JsonValueKind.False
+                        ? e2.GetBoolean()
+                        : (bool?)null;
+                if (!string.IsNullOrWhiteSpace(name) && enabled != null) result[name] = enabled.Value;
+            }
+        }
+        catch { }
+        return result;
+    }
+
+    private static Dictionary<string, bool> ReadUe4ssLoadOrder(string modsRoot)
+    {
+        var result = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        try
+        {
+            foreach (var file in Directory.EnumerateFiles(modsRoot, "*_ue4ss_loadOrder.json", SearchOption.TopDirectoryOnly))
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(file));
+                if (doc.RootElement.ValueKind != System.Text.Json.JsonValueKind.Array) continue;
+                foreach (var item in doc.RootElement.EnumerateArray())
+                {
+                    if (item.ValueKind != System.Text.Json.JsonValueKind.Object) continue;
+                    var id = item.TryGetProperty("id", out var i) ? i.GetString() : null;
+                    if (string.IsNullOrWhiteSpace(id)) continue;
+                    var enabled = !item.TryGetProperty("enabled", out var e) ||
+                                  e.ValueKind != System.Text.Json.JsonValueKind.False;
+                    result[id] = enabled;
+                }
+            }
+        }
+        catch { }
+        return result;
     }
 
     private static Dictionary<string, bool> ReadUe4ssModList(string path)

@@ -101,7 +101,7 @@ dotnet run --project src\ZoneTune.Cli -- --apply-selftest
 dotnet run --project src\ZoneTune.Cli -- --sandbox-reshade
 ```
 
-Expected current baseline: **42/42** self-tests pass; real apply and ReShade sandbox both PASS.
+Expected current baseline: **64/64** self-tests pass; real apply and ReShade sandbox both PASS.
 
 Diagnostics:
 
@@ -200,12 +200,13 @@ The app recreates defaults on next launch. Keep `ZoneTune.old` until the game is
 
 ### ReShade
 - **Preset is not visible in-game:** check `Stalker2\Binaries\Win64\ReShade.log`, press Home, ensure only one graphics proxy (`dxgi.dll`) exists.
-- **ReShade removed but game looks wrong:** ReShade Manager → Restore removed ReShade / Settings & Backups → Restore.
-- **Preset artifact / missing shaders:** ReShade Manager or Preset Studio will report missing `.fx` files. Delete `%LOCALAPPDATA%\ZoneTune\Downloads\reshade-shaders-*.zip` and reinstall to re-fetch.
+- **ReShade removed but game looks wrong:** Preset Studio → Restore removed ReShade / Settings & Backups → Restore.
+- **Preset artifact / missing shaders:** Preset Studio will report missing `.fx` files. Delete `%LOCALAPPDATA%\ZoneTune\Downloads\reshade-shaders-*.zip` and reinstall to re-fetch.
 - **Signature/hash failure:** the official ReShade setup changed or the download is altered. Delete the cached setup and retry. Do not run a file that fails the pinned SHA-256/thumbprint check.
 - **HDR washed out:** disable in-game HDR; ReShade presets generally assume SDR.
 - **Preset Studio Deband missing:** it comes from the official slim shader archive; if extraction failed, delete the shader caches above and retry. The sandbox test covers this path.
-- **Want to remove a preset you dislike:** Preset Studio → Undo last preset install; ReShade Manager → Uninstall & restore; or Remove ReShade. Manual installs outside the app are not tracked.
+- **Want to remove a preset you dislike:** Preset Studio → Undo last preset install; Preset Studio → Uninstall & restore; or Remove ReShade. Manual installs outside the app are not tracked.
+- **Mod quarantine looks wrong:** Mod Analyzer → Restore quarantined mods. The manifest is `%LOCALAPPDATA%\ZoneTune\ModQuarantine\quarantine-manifest.json`; never delete it manually while entries are active.
 
 ### Mods
 - Disable moves files to `~mods.disabled`; Enable restores them. Nothing is deleted.
@@ -275,7 +276,7 @@ If the hash differs, do not run it; download again from the release page.
 - [ ] `git status` clean
 - [ ] Version bumped in both files
 - [ ] CHANGELOG updated
-- [ ] 42/42 self-tests pass
+- [ ] 64/64 self-tests pass
 - [ ] `--apply-selftest` PASS (original config byte-identical)
 - [ ] `--sandbox-reshade` PASS
 - [ ] UI smoke test: 7 tabs, Preset Studio, review sheet, preview window

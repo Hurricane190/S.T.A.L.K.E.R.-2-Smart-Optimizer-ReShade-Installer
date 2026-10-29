@@ -50,6 +50,20 @@ try
         return 0;
     }
 
+    if (cliArgs.Contains("--mod-analyze"))
+    {
+        var game = new GameLocator().Locate(settings.GamePathOverride, settings.GamePathOverride);
+        if (!game.IsValid)
+        {
+            Console.Error.WriteLine("Game not found: " + game.ValidationMessage);
+            return 2;
+        }
+        var hardware = new HardwareService().Detect(game.Root);
+        var report = new ModPerformanceAnalyzer().Analyze(game, hardware);
+        PrintModAnalysis(report);
+        return 0;
+    }
+
     if (cliArgs.Contains("--sandbox-reshade"))
     {
         return await SandboxTest.RunAsync(settings);
@@ -145,6 +159,7 @@ static void PrintHelp()
     Console.WriteLine("  --hardware              Hardware only");
     Console.WriteLine("  --locate                Game detection only");
     Console.WriteLine("  --measure <csv>         Import a PresentMon CSV");
+    Console.WriteLine("  --mod-analyze           Static mod performance/risk inventory (read-only)");
     Console.WriteLine("  --selftest              Run offline/functional self-tests");
     Console.WriteLine("  --apply-selftest        Apply profile to real config, validate, restore (game closed)");
 }
@@ -199,6 +214,40 @@ static void PrintMeasurement(MeasurementSummary m)
     Console.WriteLine($"0.1% low: {m.PointOnePercentLowFps:0.0} FPS");
     Console.WriteLine($"Median: {m.MedianFrameMs:0.00} ms; p95 {m.P95FrameMs:0.00}; p99 {m.P99FrameMs:0.00}; max {m.MaxFrameMs:0.00}");
     Console.WriteLine($"Stutter index: {m.StutterScore:0.0}");
+}
+
+static void PrintModAnalysis(ModPerformanceReport report)
+{
+    Console.WriteLine($"Game: {report.GameRoot}");
+    Console.WriteLine($"Scanned: {report.ScannedAt:u} in {report.Duration.TotalSeconds:0.0}s · " +
+                      $"{report.Mods.Count} mods · {report.EnabledCount} enabled · " +
+                      $"{report.HighCount} high / {report.MediumCount} medium / {report.UnknownCount} unknown · " +
+                      $"{report.ContainersRead} containers read / {report.ContainersUnreadable} unreadable");
+    Console.WriteLine("Static evidence only: no FPS loss is claimed without a before/after measurement.");
+    Console.WriteLine();
+    foreach (var mod in report.Mods.OrderByDescending(m => m.Risk).ThenBy(m => m.Name))
+    {
+        Console.WriteLine($"[{mod.RiskText,-12}] {mod.Name} {mod.VersionText} ({mod.KindText}, {mod.SizeText}, {(mod.Enabled ? "enabled" : "disabled")})");
+        Console.WriteLine($"  confidence: {mod.ConfidenceText} · {mod.ContainerSummary}");
+        Console.WriteLine("  " + mod.RiskSummary);
+        foreach (var e in mod.Evidence.Where(e => e.Category is ModEvidenceCategory.Script or ModEvidenceCategory.Asset).Take(3))
+            Console.WriteLine($"  - [{e.ConfidenceText}] {e.Title}: {e.Detail}");
+        foreach (var e in mod.Evidence.Where(e => e.Category == ModEvidenceCategory.Container).Take(2))
+            Console.WriteLine($"  - [{e.ConfidenceText}] {e.Title}: {e.Source}");
+        if (!mod.QuarantineEligible) Console.WriteLine("  quarantine: blocked · " + mod.QuarantineBlockReason);
+    }
+    if (report.Overlaps.Count > 0)
+    {
+        Console.WriteLine();
+        Console.WriteLine("OVERLAPS");
+        foreach (var o in report.Overlaps.Take(12))
+            Console.WriteLine($"  {string.Join(" + ", o.Mods)} · {o.SharedAssetCount} shared path(s) · e.g. {o.Asset}");
+    }
+    if (report.Notes.Count > 0)
+    {
+        Console.WriteLine();
+        foreach (var note in report.Notes) Console.WriteLine("NOTE: " + note);
+    }
 }
 
 

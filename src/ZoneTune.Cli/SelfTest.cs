@@ -29,6 +29,7 @@ public static class SelfTest
         TestPackage(plan, scan);
         TestBackup();
         TestModToggle();
+        Results.AddRange(ModAnalyzerTests.Run());
         TestCustomPreset(scan);
         TestMeasurement();
         TestReport(scan, plan);

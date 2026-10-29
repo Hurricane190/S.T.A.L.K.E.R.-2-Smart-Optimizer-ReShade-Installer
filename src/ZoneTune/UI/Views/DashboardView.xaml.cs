@@ -303,7 +303,7 @@ public partial class DashboardView : UserControl, IRefreshable
         var rsCard = UiKit.Card(rsStack, 13, flat: true);
         rsCard.Margin = new Thickness(0, 0, 0, 8);
         rsCard.Cursor = Cursors.Hand;
-        rsCard.MouseLeftButtonUp += (_, _) => _main.Navigate("reshade");
+        rsCard.MouseLeftButtonUp += (_, _) => _main.Navigate("studio");
         EnvironmentPanel.Children.Add(rsCard);
 
         var modsStack = new StackPanel();
@@ -327,6 +327,7 @@ public partial class DashboardView : UserControl, IRefreshable
         EnvironmentPanel.Children.Add(gameCard);
 
         QuickActionsPanel.Children.Clear();
+        QuickActionsPanel.Children.Add(UiKit.Button("Mod analyzer", (_, _) => _main.Navigate("modanalyzer"), icon: UiKit.Icon("gauge"), compact: true));
         QuickActionsPanel.Children.Add(UiKit.Button("Reports", (_, _) => _main.Navigate("reports"), icon: UiKit.Icon("report"), compact: true));
         QuickActionsPanel.Children.Add(UiKit.Button("Backups", (_, _) => _main.Navigate("settings"), icon: UiKit.Icon("shield"), compact: true));
     }

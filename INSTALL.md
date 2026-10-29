@@ -13,9 +13,10 @@
 5. On first launch, ZoneTune auto-detects the game from Steam library manifests and scans the PC.
 
 The app writes only to:
-- `%LOCALAPPDATA%\ZoneTune` (settings, logs, cache, packages, reports, change sets)
+- `%LOCALAPPDATA%\ZoneTune` (settings, logs, cache, packages, reports, change sets, `ModQuarantine`, `ModComparisons`)
 - the game’s `Saved\Config\Windows` folder **only after you press Apply**
 - the game’s `Binaries\Win64` folder **only when you install ReShade/presets**
+- the selected mod’s own folder **only after you confirm Mod Analyzer → Quarantine Selected** (files are copied and hash-verified before the original is removed from the load path)
 
 ## First run
 
@@ -23,7 +24,8 @@ The app writes only to:
 2. If the game is missing, open **Settings & Backups → Game folder → Browse** and select the folder containing `Stalker2.exe` (typically `...\steamapps\common\S.T.A.L.K.E.R. 2 Heart of Chornobyl`).
 3. Review the **Recommended in-game profile**. Press **Preview changes**, then **Apply recommended** (game must be closed).
 4. Or use **Optimize** for problem-specific plans (Loud PC / Low FPS / Stuttering).
-5. Use **ReShade Manager** only if you want post-processing.
+5. Use **Preset Studio** only if you want post-processing; its top card installs/removes ReShade and its catalog section installs ready-made presets.
+6. Use **Mod Analyzer → Scan Mods** to review static mod evidence. Quarantine is manual, confirmed, and reversible; it never deletes a mod permanently.
 
 ## Applying settings
 
@@ -46,7 +48,8 @@ The app writes only to:
 
 - **Dashboard → Undo last change** restores the most recent change set (settings or ReShade).
 - **Settings & Backups → Restore latest change** does the same and shows every stored point; **Restore** on a row restores that exact point.
-- **ReShade Manager → Uninstall & restore** rolls back a preset/ReShade install made by ZoneTune.
+- **Preset Studio → Uninstall & restore** rolls back a preset/ReShade install made by ZoneTune.
+- **Mod Analyzer → Restore quarantined mods** returns hash-verified files to their original paths.
 - **Preset Studio → Undo last preset install** restores the prior preset/ReShade.ini.
 - Restores create their own safety snapshot, so an undo can be undone. Close the game first.
 

@@ -1,5 +1,43 @@
 # Test results — 2026-10-28
 
+> **2026-10-29 update:** the application now has a **Mod Performance Analyzer** tab and the ReShade Manager was merged into Preset Studio. The current self-test baseline is **64/64 PASS**, including fixture-based mod discovery, risk classification, quarantine/restore, corruption handling, interrupted-operation recovery and manual comparison tests. The historical 1.0.0 results below are retained for traceability.
+
+## 2026-10-29 — Mod Analyzer / Preset Studio update
+
+Commands executed:
+
+```powershell
+dotnet build ZoneTune.slnx -c Release
+dotnet run --project src\ZoneTune.Cli -c Release -- --selftest
+dotnet run --project src\ZoneTune.Cli -c Release -- --mod-analyze
+ZoneTune.exe --ui-smoke
+```
+
+Results:
+
+- Release build: **0 warnings, 0 errors**.
+- Self-test: **64/64 PASS**.
+- Mod Analyzer Ignore/Unignore persistence: **PASS** (path-based record survives a reload; Unignore restores the warning).
+- UI smoke: all seven tabs instantiated and refreshed: Dashboard, Optimize, Preset Studio, Installed Mods, Mod Analyzer, Settings & Backups, Diagnostic Reports. Exit code 0; no new crash log.
+- Single-file `win-x64` publish to a temporary folder: succeeded; the published executable also passed `--ui-smoke` with exit code 0.
+- Full `.\build.ps1` release pipeline: 64/64 self-tests passed, self-contained publish completed.
+- `dist\ZoneTune.exe` 134.1 MB, `dist\zonetune-cli.exe` 70.7 MB, version `1.1.1`.
+- Nexus package `ZoneTune-1.1.1-Nexus.zip` (56.5 MB, SHA-256 `8596698f496dd57fa5ee2a6b3d33f762fead1cfb90af2672c77d25e59eedc4d4`); extracted package passed checksum verification and `--ui-smoke`.
+- Real installation read-only analyzer run: **66 inventory entries, 60 enabled, 65 containers read, 19 unreadable, 2 HIGH / 8 MEDIUM / 14 UNKNOWN, 2 cross-mod overlap notes** in under 1 s.
+- The High results were UE4SS Lua mods with source-level high-frequency loops plus actor queries (50 ms). They are reported as strong static hypotheses, not measured FPS losses.
+- Overlap examples were detected between two VFX mods (6 shared asset paths) and two SFX mods (2 shared asset paths).
+- `--apply-selftest` (live config write/restore) and `--sandbox-reshade` (network download/install) were not rerun in this change because they touch the live config or download binaries. The existing 1.0.0 evidence for those paths is retained; the changed code does not touch them in production.
+
+Fixture tests cover:
+
+- legacy pak indexing, loose pak discovery, IoStore index parsing, corrupt pak handling
+- UE4SS `mods.json` state, native-only UNKNOWN, Vortex marker refusal, version detection
+- repeat scans without duplicates, overlap detection
+- quarantine copy/hash/remove, directory and loose-pak restore round-trips, restore collision refusal, tamper detection, interrupted-operation reconciliation
+- persisted Ignore/Unignore decisions for Medium/High warnings
+- refusal to move paths outside `~mods` / UE4SS Mods / top-level ASI
+- manual PresentMon comparison storage and caveats
+
 Environment:
 
 - Windows 11 Home 26H2, build 26300, x64
@@ -101,7 +139,7 @@ Built a package with `--package`, extracted it, redirected `LOCALAPPDATA` to a t
 
 ## 6. UI smoke test — PASS
 
-- all seven tabs instantiated and rendered: Dashboard, Optimize, ReShade Manager, Preset Studio, Installed Mods, Settings & Backups, Diagnostic Reports
+- all seven tabs instantiated and rendered at the time: Dashboard, Optimize, ReShade Manager, Preset Studio, Installed Mods, Settings & Backups, Diagnostic Reports (ReShade Manager was later merged into Preset Studio)
 - preset preview window rendered before/after + comparison
 - recommended-settings review sheet rendered rows with current/recommended values
 - no new `crash-*.log` entries during navigation

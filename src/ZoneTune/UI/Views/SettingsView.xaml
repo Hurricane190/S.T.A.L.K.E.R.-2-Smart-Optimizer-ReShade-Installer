@@ -114,7 +114,7 @@
             <Border Background="#0F1511" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="9" Padding="16" Margin="0,16,0,0">
                 <StackPanel>
                     <TextBlock Text="ABOUT ZONETUNE" Style="{StaticResource Overline}"/>
-                    <TextBlock Text="ZoneTune 1.0.0 · local-only Windows utility for STALKER 2: Heart of Chornobyl. It reads hardware, configuration, installed mods and logs; writes only after creating a change set; never deletes mods." Style="{StaticResource BodyDim}" Margin="0,5,0,0"/>
+                    <TextBlock Text="ZoneTune 1.1.1 · local-only Windows utility for STALKER 2: Heart of Chornobyl. It reads hardware, configuration, installed mods and logs; writes only after creating a change set; never deletes mods." Style="{StaticResource BodyDim}" Margin="0,5,0,0"/>
                     <TextBlock Text="Not affiliated with GSC Game World or the ReShade project. STALKER is a trademark of its owner. ReShade is downloaded from reshade.me; shader files are fetched from the official crosire/reshade-shaders repository and retain their licenses. Presets authored by ZoneTune are CC0-1.0." Style="{StaticResource BodyDim}" Margin="0,7,0,0"/>
                 </StackPanel>
             </Border>

@@ -185,7 +185,7 @@ public sealed class PackageBuilder
             sb.AppendLine("OPTIONAL RESHADE PRESET");
             sb.AppendLine("-----------------------");
             sb.AppendLine($"The presets folder contains '{preset.Name}' ({preset.License}).");
-            sb.AppendLine("It is NOT installed automatically. Use the ReShade Manager in ZoneTune, or copy the .ini next to");
+            sb.AppendLine("It is NOT installed automatically. Use the Preset Studio in ZoneTune, or copy the .ini next to");
             sb.AppendLine("Stalker2-Win64-Shipping.exe and set it in ReShade's overlay.");
             sb.AppendLine($"Compatibility: {preset.StatusText} — {preset.StatusNote}");
             sb.AppendLine();

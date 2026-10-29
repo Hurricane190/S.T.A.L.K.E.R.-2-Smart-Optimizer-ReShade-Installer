@@ -12,7 +12,7 @@
 ```
 src/
   ZoneTune.Core/     services/models: hardware, game, INI, mods, ReShade, packages, reports
-  ZoneTune/          WPF desktop app (custom dark shell, seven tabs, preview window)
+  ZoneTune/          WPF desktop app (custom dark shell, seven tabs incl. Mod Analyzer, preview window)
   ZoneTune.Cli/      console harness: scan/report/plan/package/selftest/sandbox
 ```
 
@@ -49,8 +49,11 @@ dist\
 ## Tests
 
 ```powershell
-# 42 core/functional tests (read-only against the real install; sandbox for writes)
+# 64 core/functional tests (read-only against the real install; temporary fixtures for writes)
 dotnet run --project src\ZoneTune.Cli -- --selftest
+
+# Read-only static mod performance inventory on the detected install
+dotnet run --project src\ZoneTune.Cli -- --mod-analyze
 
 # ReShade end-to-end in a temporary game folder:
 # install -> official uninstall -> restore -> final rollback

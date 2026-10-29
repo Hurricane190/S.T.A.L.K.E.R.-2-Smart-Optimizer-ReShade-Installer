@@ -243,9 +243,9 @@ public sealed class ScanService
                 Severity = Severity.Info,
                 Category = "ReShade",
                 Title = "ReShade is not installed",
-                Detail = "Optional. The ReShade Manager can install the official ReShade build with backups, but it is not required for performance tuning.",
+                Detail = "Optional. The Preset Studio can install the official ReShade build with backups, but it is not required for performance tuning.",
                 Evidence = $"No ReShade module found in {scan.Game.BinariesDir}.",
-                Recommendation = "Use the ReShade Manager for presets; skip it if you want the lowest overhead."
+                Recommendation = "Use the Preset Studio for presets; skip it if you want the lowest overhead."
             });
         }
 
@@ -319,7 +319,7 @@ public sealed class ScanService
                 Title = "Active preset references missing shaders",
                 Detail = "At least one technique in the active preset has no matching .fx file in the configured shader paths. ReShade may silently skip it.",
                 Evidence = string.Join(", ", rs.ShaderReferences.Where(s => !s.Present).Select(s => s.File).Distinct()),
-                Recommendation = "Install the preset's required shader package or choose a preset that validates in the ReShade Manager.",
+                Recommendation = "Install the preset's required shader package or choose a preset that validates in the Preset Studio.",
                 RelatedProblems = { ProblemKind.Stuttering }
             });
         }
